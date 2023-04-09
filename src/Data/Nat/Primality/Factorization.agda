@@ -89,9 +89,9 @@ factorize (suc (suc n)) = <-rec (λ n′ → ∀ {k} → 2 ≤ n′ → k ≤‴
       prop : (2 + k) * product (factors res) ≡ 2 + n
       prop = begin
         (2 + k) * product (factors res) ≡⟨ cong ((2 + k) *_) (Factorization.isFactorization res) ⟩
-        (2 + k) * quotient k∣n ≡⟨ *-comm (2 + k) (quotient k∣n) ⟩
-        quotient k∣n * (2 + k) ≡˘⟨ _∣_.equality k∣n ⟩
-        2 + n ∎
+        (2 + k) * quotient k∣n          ≡⟨ *-comm (2 + k) (quotient k∣n) ⟩
+        quotient k∣n * (2 + k)          ≡˘⟨ _∣_.equality k∣n ⟩
+        2 + n                           ∎
 
 -- Properties of factorizations
 ------------------------------------------------------------------------
@@ -112,7 +112,7 @@ factorizationUnique′ : (as bs : List ℕ) → product as ≡ product bs → Al
 factorizationUnique′ [] [] Πas≡Πbs asPrime bsPrime = refl
 factorizationUnique′ [] (suc (suc b) ∷ bs) Πas≡Πbs asPrime (bPrime ∷ bsPrime) = contradiction Πas≡Πbs (<⇒≢ (<-transˡ (*-monoˡ-< 1 {1} {2 + b} (s≤s (s≤s z≤n))) (*-monoʳ-≤ (2 + b) (factorization≥1 bsPrime))))
 factorizationUnique′ (a ∷ as) bs Πas≡Πbs (aPrime ∷ asPrime) bsPrime with factorizationPullToFront aPrime (divides (product as) (≡.trans (sym Πas≡Πbs) (*-comm a (product as)))) bsPrime
-... | bs′ , bs↭a∷bs′ = ↭-trans (prep a (factorizationUnique′ as bs′ (*-cancelˡ-≡ a ⦃ Prime⇒NonZero aPrime ⦄ (≡.trans Πas≡Πbs (productPreserves↭⇒≡ bs↭a∷bs′))) asPrime (All.tail (All-resp-↭ (bs↭a∷bs′) bsPrime)))) (↭-sym bs↭a∷bs′)
+... | bs′ , bs↭a∷bs′ = ↭-trans (prep a (factorizationUnique′ as bs′ (*-cancelˡ-≡ (product as) (product bs′) a {{Prime⇒NonZero aPrime}} (≡.trans Πas≡Πbs (productPreserves↭⇒≡ bs↭a∷bs′))) asPrime (All.tail (All-resp-↭ (bs↭a∷bs′) bsPrime)))) (↭-sym bs↭a∷bs′)
 
 factorizationUnique : {n : ℕ} (f f′ : Factorization n) → factors f ↭ factors f′
 factorizationUnique f f′ = factorizationUnique′ (factors f) (factors f′) (≡.trans (Factorization.isFactorization f) (sym (Factorization.isFactorization f′))) (Factorization.factorsPrime f) (Factorization.factorsPrime f′)
